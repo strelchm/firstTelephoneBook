@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<script src="https://code.angularjs.org/1.5.0/angular-route.js"></script><!-- Angular -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.1/angular.min.js"></script><!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/3.6.6/firebase.js"></script><!-- AngularFire -->
+<script src="https://cdn.firebase.com/libs/angularfire/2.3.0/angularfire.min.js"></script><!--bootstrap-->
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script>  // Initialize the Firebase SDK
+  var config = {
+    apiKey: "AIzaSyBosYGs7W9QiC3POecms7bCYxr-Bdh0qWg",
+    authDomain: "telephonebook-7438b.firebaseapp.com",
+    databaseURL: "https://telephonebook-7438b.firebaseio.com",
+    storageBucket: "telephonebook-7438b.appspot.com",
+    messagingSenderId: "383813101085"
+  };
+  firebase.initializeApp(config);
+</script>
+<body ng-app="myApp">
+<div ng-controller="myCtrl">
+<h3>Телефонный справочник компании ООО "Студенты"</h3><br>
+<div style="text-align:center; width:100%">
+<button class="btn btn-large btn-primary" style="margin:auto" ng-click='showBlock = ! showBlock' ng-show='true'>Создать запись!</button><br>
+</div>
+
+<br>
+<div ng-show="showBlock">
+<table  class="table table-bordered"  ng-model="table" align="center" rules="cols" bgcolor="#3498db" border="1"  style="margin:auto; width:60%">
+<form style="width:70%; margin:auto;" ng-model="myFormNew" name="myFormNew" required>
+<tr style="border-color:blue">
+<td style="border-right:none; border-bottom:none;"><h4>Фио: </h4></td>
+<td style="border-left:none; border-bottom:none"><input class="form-control" name="user.name" style="margin: auto" type='text' ng-model='user.name' required></td>
+<td style="text-align:center" rowspan='3'><p><br><h4>Адресс:</h4><br> <textarea class="form-control" rows="3" style='width:80%; margin:auto' type='text' ng-model='user.adress' required></textarea></p></td>
+</tr>
+<tr>
+<td style="border-right:none; border-bottom:none; border-top:none"><h4>Почта: </h4></td>
+<td style="border-left:none; border-bottom:none; border-top:none"><input class="form-control" style="margin: auto" type='email' name='user.post' ng-model='user.post' required></td>
+</tr>
+<tr>
+<td style="border-right:none; border-bottom:none; border-top:none"><h4>Телефон: </h4></td>
+<td style="border-left:none; border-top:none"><input class="form-control" style="margin: auto" type='text' name="user.tel" ng-model='user.tel' required></td>
+</tr>
+</form>
+</table>
+<br><div style="margin:auto; width:60%; text-align:right"><button style="margin-top:0" class="btn btn-large btn-success" ng-click='add();showBlock = ! showBlock' ng-show='true'>Сохранить</button></br></div>
+</div>
+
+
+<label style="margin-left:25%">Поиск по телефонной книге: <input ng-model="searchText"></label>
+<div>
+<table class="table table_block" ng-repeat="n in names|filter:searchText" style="background-color:#AFEEEE; margin:auto; width:50%; border-radius:25px">
+
+
+<form style="width:70%; margin:auto;" name="myForm">
+<tr>
+<td style="border-right:none; border-bottom:none;"><h4>Фио: </h4></td>
+<td style="border-left:none; border-bottom:none"><input class="form-control" type="text" ng-model="n.name" style="width:70%;" value="{{n.name}}" ng-change="names.$save(n)"></td>
+<td style="text-align:right; border-bottom:none;"><div><button style="text-allign:right" class="btn-danger btn-sm" ng-click="deleteThis(n)">Х</button></div><p></td>
+</tr>
+<tr>
+<td style="border-right:none; border-bottom:none; border-top:none"><br><h4>Почта: </h4></td>
+<td style="border-left:none; border-bottom:none; border-top:none"><br><input class="form-control" type="text" ng-model="n.post" style="width:70%;" value="{{n.post}}" ng-change="names.$save(n)"></td>
+<td style="border-top:none;text-align:center" rowspan='2'><p><h4>Адресс:</h4> <textarea class="form-control" style=' margin: auto; width:80%; height:110px' background-color:green" value="{{n.adress}}" ng-model="n.adress" ng-change="names.$save(n)"></textarea></p></td>
+
+</tr>
+<tr>
+<td style="border-right:none; border-bottom:none; border-top:none"><h4>Телефон: </h4></td>
+<td style="border-left:none; border-top:none"><input class="form-control" type="text" ng-model="n.tel" style="width:70%;" value="{{n.tel}}" ng-change="names.$save(n)"></td>
+</tr>
+</form>
+
+
+
+
+</table>
+</div>
+<script>
+var app = angular.module("myApp", ["firebase"]); 
+app.controller("myCtrl", function($scope, $firebaseArray) {
+$scope.hideTable=false;
+var ref=firebase.database().ref();
+$scope.names=$firebaseArray(ref);
+
+
+$scope.add=function(){
+$scope.names.$add($scope.user);
+    
+}
+
+$scope.deleteThis=function(n){
+$scope.names.$remove(n);
+}
+});
+
+</script>
+
+</body>
+</html>
